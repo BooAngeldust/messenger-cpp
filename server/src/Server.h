@@ -32,8 +32,8 @@ private:
 	int sendMessage(SOCKET socket, const std::string& message);
 	int sendMessage(SOCKET socket, const void* data, int dataSize);
 
-	int recvMessage(void* data, int dataSize);
-	int recvMessage(std::string& data);
+	int recvMessage(SOCKET socket, void* data, int dataSize);
+	int recvMessage(SOCKET socket, std::string& data);
 
 public:
 	void init(unsigned int port);

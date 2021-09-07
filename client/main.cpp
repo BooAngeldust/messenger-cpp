@@ -29,27 +29,7 @@ int main(int argc , char *argv[])
 		return 1;
 	}
 	
-	std::string data; 
-	int result;
-
-
-	while (true)
-	{
-		result = client.recvMessage(data);
-		if (result != 0)
-		{
-			if (result == 0)
-				std::cout << "Server disconnected.";
-			else
-				if (WSAGetLastError() != 0)
-					std::cout << "Error in read: " << WSAGetLastError();
-		}
-
-		std::cout << data << std::endl;
-
-	}
-	
-	std::cin.get();
+	client.run();
 
 	WSACleanup();
 

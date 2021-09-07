@@ -18,14 +18,14 @@ public:
 	void init();
 
 	bool makeConnection(const std::string& ip, unsigned int port);
-	bool sendMessage(char* message);
 
 	int recvMessage(void* data, int dataSize);
 	int recvMessage(std::string& data);
 
-	int sendMessage(const std::string& message);
+	int sendMessage(const std::string& data);
 	int sendMessage(const void* data, int dataSize);
 
+	void run();
 
 	~Client();
 };

@@ -70,8 +70,6 @@ void Server::acceptConnections()
 		if (new_socket != INVALID_SOCKET)
 		{
 			// If a connection is made push client to vector
-
-
 			std::unique_ptr<Client> client(new Client);
 			
 			client->socket = new_socket;
@@ -79,7 +77,11 @@ void Server::acceptConnections()
 			client->name = std::to_string(counter);
 
 			std::cout << "New connection: " << client->name << std::endl;
-			int result = sendMessage(client->socket, "Welcome: " + client->name);
+
+			std::string data;
+
+			recvMessage(client->socket, data);
+			sendMessage(client->socket, data);
 
 			mClients.push_back(std::move(client));
 			counter++;
@@ -87,9 +89,53 @@ void Server::acceptConnections()
 	}
 }
 
-void Server::recvMessages()
+void Server::recvMessages() 
 {
 
+}
+
+int Server::recvMessage(SOCKET socket, void* data, int dataSize)
+{
+	char* dataPtr = (char*) data;
+
+	int bytesRecv;
+
+	while (dataSize > 0)
+	{
+		bytesRecv = recv(socket, dataPtr, dataSize, 0);
+		if (bytesRecv <= 0)
+			return bytesRecv;
+
+		dataPtr += bytesRecv;
+		dataSize -= bytesRecv;
+	}
+
+	return 1;
+}
+
+int Server::recvMessage(SOCKET socket, std::string& data)
+{
+	int result;
+	unsigned long dataSize;
+
+	data = "";
+	result = recvMessage(socket, &dataSize, sizeof(dataSize));
+
+	if (result == 1)
+	{
+		dataSize = ntohl(dataSize);
+
+		if (dataSize > 0)
+		{
+			data.resize(dataSize);
+
+			result = recvMessage(socket, &data[0],dataSize);
+			if (result != 1)
+				data.clear();
+		}
+	}
+
+	return result;
 }
 
 void Server::run()

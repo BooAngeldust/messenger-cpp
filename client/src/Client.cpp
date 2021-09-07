@@ -30,18 +30,9 @@ bool Client::makeConnection(const std::string& ip, unsigned int port)
 	}
 
 	mConnected = true;
-	return true;
-}
 
-bool Client::sendMessage(char* message)
-{
-	if (!mConnected)
-		std::cout << "No connection established, please connect first." << std::endl;
-
-	if (send(mSocket, message, strlen(message), 0) < 0)
-	{
-		return false;
-	}
+	// Send test msg to server
+	sendMessage("Hello world");
 
 	return true;
 }
@@ -97,9 +88,9 @@ int Client::sendMessage(const std::string& data)
 {
 	unsigned long dataSize = htonl(data.size());
 
-	int result = sendMessage(mSocket, &dataSize, sizeof(dataSize));
+	int result = sendMessage(&dataSize, sizeof(dataSize));
 	if (result == 1)
-		result = sendMessage(mSocket, data.c_str(), data.size());
+		result = sendMessage(data.c_str(), data.size());
 
 	return result;
 }
@@ -122,6 +113,29 @@ int Client::sendMessage(const void* data, int dataSize)
 	return 1;
 }
 
+void Client::run()
+{
+	std::string data; 
+	int result;
+
+	while (mConnected)
+	{
+		result = recvMessage(data);
+		if (result != 0)
+		{
+			if (result == 0)
+				std::cout << "Server disconnected.";
+			else
+				if (WSAGetLastError() != 0)
+				{
+					std::cout << "Error in read: " << WSAGetLastError();
+					break;
+				}
+		}
+
+		std::cout << data << std::endl;
+	}
+}
 
 Client::~Client()
 {
