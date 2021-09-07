@@ -1,5 +1,6 @@
 #include <winsock2.h>
 #include <iostream>
+#include <string>
 
 #include "src/Client.h"
 
@@ -28,9 +29,24 @@ int main(int argc , char *argv[])
 		return 1;
 	}
 	
+	std::string data; 
+	int result;
+
+
 	while (true)
 	{
-		client.recvMessage();
+		result = client.recvMessage(data);
+		if (result != 0)
+		{
+			if (result == 0)
+				std::cout << "Server disconnected.";
+			else
+				if (WSAGetLastError() != 0)
+					std::cout << "Error in read: " << WSAGetLastError();
+		}
+
+		std::cout << data << std::endl;
+
 	}
 	
 	std::cin.get();

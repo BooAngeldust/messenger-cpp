@@ -7,15 +7,18 @@
 #include <vector>
 #include <memory>
 
-struct Client
-{
-	SOCKET socket;
-	struct sockaddr_in connection;
-	std::string name;
-};
+
 
 class Server
 {
+private:
+	struct Client
+	{
+		SOCKET socket;
+		struct sockaddr_in connection;
+		std::string name;
+	};
+
 private:
 	SOCKET mSocket;
 	struct sockaddr_in mConnection;
@@ -25,7 +28,12 @@ private:
 	void acceptConnections();
 	void recvMessages();
 
-	void sendMessage(SOCKET socket, const std::string& message);
+
+	int sendMessage(SOCKET socket, const std::string& message);
+	int sendMessage(SOCKET socket, const void* data, int dataSize);
+
+	int recvMessage(void* data, int dataSize);
+	int recvMessage(std::string& data);
 
 public:
 	void init(unsigned int port);

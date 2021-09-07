@@ -20,9 +20,33 @@ void Server::init(unsigned int port)
 	std::cout << "Success." << std::endl;
 }
 
-void Server::sendMessage(SOCKET socket, const std::string& message)
+int Server::sendMessage(SOCKET socket, const std::string& data)
 {
-	send(socket , message.c_str() , strlen(message.c_str()) + 1 , 0);
+	unsigned long dataSize = htonl(data.size());
+
+	int result = sendMessage(socket, &dataSize, sizeof(dataSize));
+	if (result == 1)
+		result = sendMessage(socket, data.c_str(), data.size());
+
+	return result;
+}
+
+int Server::sendMessage(SOCKET socket, const void* data, int dataSize)
+{
+	int bytesSend;
+	const char* dataPtr = (const char*)data;
+
+	while (dataSize > 0)
+	{
+		bytesSend = send(socket, dataPtr, dataSize,0);
+		if (bytesSend == SOCKET_ERROR)
+			return -1;
+
+		dataPtr += bytesSend;
+		dataSize -= bytesSend;
+	}
+
+	return 1;
 }
 
 void Server::acceptConnections()
@@ -55,7 +79,7 @@ void Server::acceptConnections()
 			client->name = std::to_string(counter);
 
 			std::cout << "New connection: " << client->name << std::endl;
-			sendMessage(client->socket, "Welcome: " + client->name);
+			int result = sendMessage(client->socket, "Welcome: " + client->name);
 
 			mClients.push_back(std::move(client));
 			counter++;
