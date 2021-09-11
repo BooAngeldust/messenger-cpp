@@ -4,6 +4,8 @@
 
 #include "src/Client.h"
 
+#define PORT 8889
+
 int main(int argc , char *argv[])
 {
 	WSADATA wsa;
@@ -22,7 +24,7 @@ int main(int argc , char *argv[])
 	client.init();
 
 	// Connect to the server
-	bool connection = client.makeConnection("127.0.0.1",8889);
+	bool connection = client.makeConnection("127.0.0.1",PORT);
 	if (!connection)
 	{
 		std::cout << "No connection established with the server.";

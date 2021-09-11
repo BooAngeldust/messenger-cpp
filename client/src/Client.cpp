@@ -32,7 +32,9 @@ bool Client::makeConnection(const std::string& ip, unsigned int port)
 	mConnected = true;
 
 	// Send test msg to server
-	sendMessage("Hello world");
+
+	sendMessage("Haha, im connected");
+	
 
 	return true;
 }

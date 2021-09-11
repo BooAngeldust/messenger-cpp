@@ -1,13 +1,13 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <iostream>
 #include <string>
 #include <winsock2.h>
 #include <vector>
 #include <memory>
 
-
+#include <iostream>
+#include <sys/time.h>
 
 class Server
 {
@@ -25,15 +25,15 @@ private:
 	std::vector<std::unique_ptr<Client>> mClients;
 
 private:
-	void acceptConnections();
 	void recvMessages();
-
 
 	int sendMessage(SOCKET socket, const std::string& message);
 	int sendMessage(SOCKET socket, const void* data, int dataSize);
 
 	int recvMessage(SOCKET socket, void* data, int dataSize);
 	int recvMessage(SOCKET socket, std::string& data);
+
+	std::string getPeerName(Client client);
 
 public:
 	void init(unsigned int port);

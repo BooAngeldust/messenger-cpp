@@ -2,6 +2,8 @@
 
 #include "src/Server.h"
 
+#define PORT 8889
+
 int main(int argc , char *argv[])
 {
 	WSADATA wsa;
@@ -18,7 +20,7 @@ int main(int argc , char *argv[])
 	// Create server instance
 	Server server;
 
-	server.init(8889);
+	server.init(PORT);
 	server.run();
 	
 	
